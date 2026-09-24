@@ -1,0 +1,1441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Brandon Rodriguez</title>
+<meta name="description" content="Brandon Rodriguez, a Ph.D. student at the University of Florida working on interpretable machine learning: conditional video question answering and online-adaptive fuzzy cognitive maps." />
+<meta name="author" content="Brandon Rodriguez" />
+<link rel="canonical" href="https://brandonrodriguez.vercel.app/" />
+<meta property="og:type" content="profile" />
+<meta property="og:title" content="Brandon Rodriguez" />
+<meta property="og:description" content="Ph.D. student at the University of Florida. Interpretable machine learning: conditional video question answering, online-adaptive fuzzy cognitive maps." />
+<meta property="og:url" content="https://brandonrodriguez.vercel.app/" />
+<meta name="twitter:card" content="summary" />
+<meta name="theme-color" content="#04102E" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#BFC7DC" media="(prefers-color-scheme: light)" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230021A5'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%23FA4616'/%3E%3Cg stroke='%23FFFFFF' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M32 10v12'/%3E%3Cpath d='M32 42v12'/%3E%3Cpath d='M10 32h12'/%3E%3Cpath d='M42 32h12'/%3E%3C/g%3E%3C/svg%3E" />
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Typefaces: Newsreader (display), IBM Plex Sans (body),
+   IBM Plex Mono (data / labels). Self-hosted, no external CDN.
+   ───────────────────────────────────────────────────────────── */
+@font-face{font-family:"Newsreader";src:url("fonts/newsreader-var.woff2") format("woff2-variations");font-weight:200 800;font-style:normal;font-display:swap;}
+@font-face{font-family:"Newsreader";src:url("fonts/newsreader-var-italic.woff2") format("woff2-variations");font-weight:200 800;font-style:italic;font-display:swap;}
+@font-face{font-family:"Plex Sans";src:url("fonts/plex-sans-400.woff2") format("woff2");font-weight:400;font-display:swap;}
+@font-face{font-family:"Plex Sans";src:url("fonts/plex-sans-500.woff2") format("woff2");font-weight:500;font-display:swap;}
+@font-face{font-family:"Plex Sans";src:url("fonts/plex-sans-600.woff2") format("woff2");font-weight:600;font-display:swap;}
+@font-face{font-family:"Plex Mono";src:url("fonts/plex-mono-400.woff2") format("woff2");font-weight:400;font-display:swap;}
+@font-face{font-family:"Plex Mono";src:url("fonts/plex-mono-500.woff2") format("woff2");font-weight:500;font-display:swap;}
+
+/* ─────────── Tokens: light is the base set ─────────── */
+:root{
+  /* University of Florida brand, constant across both themes */
+  --uf-blue:#0021A5;
+  --uf-orange:#FA4616;
+  --uf-blue-ink:#0021A5;
+
+  --bg:#BFC7DC;
+  --bg-raised:#D5DBEA;
+  --bg-sunk:#ACB7CF;
+  --fg:#08123A;
+  --fg-2:#26315F;
+  --fg-3:#465282;
+  --line:#9DA8C4;
+  --line-soft:#B0BAD2;
+  --pos:#0021A5;          /* excitatory  w > 0 */
+  --neg:#DC3D0B;          /* inhibitory  w < 0 */
+  --accent:#FA4616;
+  --accent-quiet:#F0CDB8;
+  --key-ink:#FFFFFF;
+  --shadow:0 1px 2px rgba(8,18,58,.10), 0 10px 26px -14px rgba(8,18,58,.34);
+  --canvas-ink:#08123A;
+
+  --f-display:"Newsreader",ui-serif,Georgia,"Times New Roman",serif;
+  --f-body:"Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+
+  --s--1:.8125rem;
+  --s-0:1.0625rem;
+  --s-1:1.25rem;
+  --s-2:1.5rem;
+  --s-3:1.9rem;
+  --s-4:clamp(2.1rem,4.4vw,3rem);
+  --s-5:clamp(2.9rem,9vw,5.75rem);
+
+  --gutter:clamp(1.25rem,5vw,3rem);
+  --rail:190px;
+  --measure:66ch;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#04102E;
+    --bg-raised:#0B1B42;
+    --bg-sunk:#020A20;
+    --fg:#E9EDF8;
+    --fg-2:#A9B6D4;
+    --fg-3:#7A88AC;
+    --line:#1B2B55;
+    --line-soft:#13203F;
+    --pos:#6E9BFF;
+    --neg:#FF7A45;
+    --accent:#FF7A45;
+    --accent-quiet:#40200F;
+    --key-ink:#1A0A02;
+    --uf-blue-ink:#7DA6FF;
+    --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 32px -16px rgba(0,0,0,.75);
+    --canvas-ink:#E9EDF8;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#04102E;
+  --bg-raised:#0B1B42;
+  --bg-sunk:#020A20;
+  --fg:#E9EDF8;
+  --fg-2:#A9B6D4;
+  --fg-3:#7A88AC;
+  --line:#1B2B55;
+  --line-soft:#13203F;
+  --pos:#6E9BFF;
+  --neg:#FF7A45;
+  --accent:#FF7A45;
+  --accent-quiet:#40200F;
+  --key-ink:#1A0A02;
+  --uf-blue-ink:#7DA6FF;
+  --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 32px -16px rgba(0,0,0,.75);
+  --canvas-ink:#E9EDF8;
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--f-body);
+  font-size:var(--s-0);
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg,canvas{display:block;max-width:100%;}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
+
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:400;line-height:1.08;letter-spacing:-.015em;text-wrap:balance;margin:0;}
+p{margin:0;}
+ul{margin:0;padding:0;list-style:none;}
+
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums;}
+.eyebrow{
+  font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--fg-3);font-weight:500;
+}
+
+/* ─────────── Shell ─────────── */
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:var(--gutter);}
+
+.topbar::before{
+  content:"";position:absolute;inset:0 0 auto;height:3px;
+  background:linear-gradient(90deg,var(--uf-blue) 0%,var(--uf-blue) 42%,var(--uf-orange) 100%);
+}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid transparent;
+  transition:border-color .25s ease;
+}
+.topbar[data-stuck="true"]{border-bottom-color:var(--line);}
+.topbar__in{display:flex;align-items:center;gap:1.5rem;min-height:56px;}
+.mark{
+  font-family:var(--f-mono);font-size:.8125rem;font-weight:500;letter-spacing:.1em;
+  text-decoration:none;display:inline-flex;align-items:center;gap:.55rem;flex:0 0 auto;
+}
+.mark__dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:0 0 auto;}
+.topnav{display:flex;gap:1.4rem;margin-left:auto;}
+.topnav a{
+  font-family:var(--f-mono);font-size:.75rem;letter-spacing:.06em;text-decoration:none;
+  color:var(--fg-3);padding-block:.25rem;transition:color .18s ease;
+}
+.topnav a:hover{color:var(--fg);}
+@media (max-width:720px){.topnav{display:none;}}
+.themebtn{
+  margin-left:auto;background:none;border:1px solid var(--line);color:var(--fg-3);
+  border-radius:999px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;
+  transition:color .18s ease,border-color .18s ease;flex:0 0 auto;
+}
+.topnav + .themebtn{margin-left:1.25rem;}
+.themebtn:hover{color:var(--fg);border-color:var(--fg-3);}
+.themebtn svg{width:15px;height:15px;}
+:root[data-theme="dark"] .themebtn .i-sun,
+:root:not([data-theme="light"]) .themebtn .i-sun{display:block;}
+:root[data-theme="dark"] .themebtn .i-moon,
+:root:not([data-theme="light"]) .themebtn .i-moon{display:none;}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]) .themebtn .i-sun{display:none;}
+  :root:not([data-theme="dark"]) .themebtn .i-moon{display:block;}
+}
+:root[data-theme="light"] .themebtn .i-sun{display:none;}
+:root[data-theme="light"] .themebtn .i-moon{display:block;}
+
+/* ─────────── Section frame with running rail ─────────── */
+.section{padding-block:clamp(3.5rem,8vw,6.5rem);border-top:1px solid var(--line-soft);}
+.section:first-of-type{border-top:0;}
+.section__grid{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:clamp(1.5rem,4vw,3.5rem);}
+@media (max-width:940px){.section__grid{grid-template-columns:1fr;gap:1.75rem;}}
+.rail{position:sticky;top:80px;align-self:start;display:flex;flex-direction:column;gap:.6rem;}
+@media (max-width:940px){.rail{position:static;flex-direction:row;align-items:center;gap:.9rem;}}
+.rail__num{font-family:var(--f-mono);font-size:.6875rem;color:var(--accent);letter-spacing:.12em;}
+.rail__label{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-2);}
+.rail__line{height:1px;background:var(--line);margin-top:.35rem;}
+@media (max-width:940px){.rail__line{flex:1;margin:0;}}
+
+.lede{font-size:var(--s-1);line-height:1.55;color:var(--fg-2);max-width:var(--measure);}
+.prose{max-width:var(--measure);display:flex;flex-direction:column;gap:1.05rem;color:var(--fg-2);}
+.prose strong{color:var(--fg);font-weight:500;}
+
+/* ─────────── Hero ─────────── */
+.hero{padding-top:clamp(2.5rem,7vw,5rem);padding-bottom:clamp(2.5rem,6vw,4.5rem);}
+.hero__grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(2rem,5vw,4rem);align-items:center;}
+@media (max-width:940px){.hero__grid{grid-template-columns:1fr;gap:2.5rem;}}
+.hero__id{display:flex;align-items:center;gap:1.15rem;}
+.hero__aff{display:flex;flex-direction:column;gap:.5rem;}
+.afflock{
+  display:flex;align-items:center;gap:.55rem;
+  font-family:var(--f-mono);font-size:.75rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--fg-2);
+}
+.uflogo{width:26px;height:26px;flex:0 0 auto;border-radius:5px;}
+.uflogo__t{font-family:var(--f-display);font-size:20px;font-weight:600;fill:#FFFFFF;}
+@media (max-width:520px){.uflogo{width:22px;height:22px;}}
+.avatar{
+  display:block;width:104px;height:104px;flex:0 0 auto;
+  border-radius:50%;padding:4px;background:var(--bg-raised);
+  box-shadow:0 0 0 2px var(--uf-orange), var(--shadow);
+}
+.avatar img{width:100%;height:100%;display:block;border-radius:50%;object-fit:cover;}
+@media (max-width:520px){.avatar{width:84px;height:84px;}}
+.hero__name{
+  font-size:var(--s-5);line-height:.92;letter-spacing:-.03em;font-weight:390;color:var(--uf-blue-ink);
+  margin-block:.7rem .1rem;
+}
+.hero__name em{font-style:italic;font-weight:300;color:var(--accent);}
+.hero__role{
+  font-family:var(--f-mono);font-size:.8125rem;letter-spacing:.03em;color:var(--fg-2);
+  display:flex;flex-wrap:wrap;gap:.5rem .75rem;align-items:baseline;margin-top:.9rem;
+}
+.hero__role .sep{color:var(--line);}
+.hero__lede{margin-top:1.4rem;font-size:var(--s-1);line-height:1.55;color:var(--fg-2);max-width:46ch;}
+.hero__lede b{color:var(--fg);font-weight:500;}
+
+.links{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2rem;}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--f-mono);font-size:.75rem;letter-spacing:.05em;text-decoration:none;
+  padding:.6rem .95rem;border-radius:999px;border:1px solid var(--line);
+  color:var(--fg-2);background:var(--bg-raised);
+  transition:border-color .18s ease,color .18s ease,transform .18s ease;
+}
+.btn:hover{color:var(--fg);border-color:var(--fg-3);transform:translateY(-1px);}
+.btn--key{background:var(--accent);border-color:var(--accent);color:var(--key-ink);}
+.btn--key:hover{color:var(--key-ink);border-color:var(--accent);filter:brightness(1.08);}
+.btn svg{width:14px;height:14px;flex:0 0 auto;}
+
+/* live graph panel */
+.panel{
+  background:var(--bg-raised);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.panel__head{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.6rem .85rem;border-bottom:1px solid var(--line-soft);
+  font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3);
+}
+.panel__t{display:flex;align-items:center;gap:.5rem;}
+.panel__head .mono{text-transform:none;letter-spacing:.02em;}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--uf-orange);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.35;}50%{opacity:1;}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none;opacity:.8;}}
+#fcm{width:100%;aspect-ratio:1/.92;background:transparent;}
+.panel__foot{
+  padding:.7rem .85rem .85rem;border-top:1px solid var(--line-soft);
+  font-size:.75rem;line-height:1.5;color:var(--fg-3);
+}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin-bottom:.45rem;font-family:var(--f-mono);font-size:.6875rem;}
+.legend span{display:inline-flex;align-items:center;gap:.4rem;}
+.legend i{width:14px;height:2px;border-radius:2px;display:inline-block;}
+
+/* ─────────── Stat band ─────────── */
+.band{border-block:1px solid var(--line-soft);background:var(--bg-sunk);}
+.band__grid{display:grid;grid-template-columns:repeat(4,1fr);}
+@media (max-width:820px){.band__grid{grid-template-columns:repeat(2,1fr);}}
+.stat{padding:1.5rem 1.25rem;border-left:1px solid var(--line-soft);}
+.stat:first-child{border-left:0;}
+@media (max-width:820px){
+  .stat:nth-child(odd){border-left:0;}
+  .stat:nth-child(n+3){border-top:1px solid var(--line-soft);}
+}
+.stat__n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:1.65rem;font-weight:500;letter-spacing:-.02em;line-height:1;}
+.stat__l{font-size:.8125rem;color:var(--fg-3);margin-top:.5rem;line-height:1.4;}
+
+/* ─────────── Publications ─────────── */
+.pubs{display:flex;flex-direction:column;gap:2.25rem;}
+.pub{
+  background:var(--bg-raised);border:1px solid var(--line);border-radius:4px;
+  padding:clamp(1.25rem,3vw,2rem);box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:1.1rem;
+}
+.pub__top{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;}
+.tag{
+  font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.09em;text-transform:uppercase;
+  padding:.28rem .55rem;border-radius:3px;border:1px solid var(--line);color:var(--fg-3);
+}
+.tag--hit{background:var(--accent);border-color:var(--accent);color:#FFF7F2;}
+.tag--thesis{border-color:var(--pos);color:var(--pos);}
+.pub__title{font-size:var(--s-3);line-height:1.15;}
+.pub__meta{font-family:var(--f-mono);font-size:.78125rem;color:var(--fg-3);line-height:1.6;}
+.pub__meta b{color:var(--fg-2);font-weight:400;}
+.pub__abs{color:var(--fg-2);max-width:var(--measure);font-size:.96875rem;}
+
+/* first-page cover + inline PDF reader */
+.pub__lead{display:grid;grid-template-columns:186px minmax(0,1fr);gap:clamp(1.25rem,3vw,2rem);align-items:start;}
+@media (max-width:720px){.pub__lead{grid-template-columns:1fr;}}
+.pub__text{display:flex;flex-direction:column;gap:1.05rem;min-width:0;}
+.cover{
+  display:block;max-width:186px;text-decoration:none;border:1px solid var(--line);
+  border-radius:2px;overflow:hidden;background:#FFFFFF;box-shadow:var(--shadow);
+  transition:transform .2s ease,border-color .2s ease;
+}
+.cover:hover{transform:translateY(-2px);border-color:var(--accent);}
+.cover img{width:100%;height:auto;}
+.cover__cap{
+  display:block;padding:.42rem .55rem;background:var(--bg-raised);
+  border-top:1px solid var(--line-soft);color:var(--fg-3);
+  font-family:var(--f-mono);font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;
+}
+.cover:hover .cover__cap{color:var(--accent);}
+
+.pdfview{border:1px solid var(--line-soft);border-radius:3px;overflow:hidden;background:var(--bg);}
+.pdfview summary{
+  cursor:pointer;padding:.65rem .8rem;list-style:none;display:flex;align-items:center;gap:.55rem;
+  font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3);
+}
+.pdfview summary::-webkit-details-marker{display:none;}
+.pdfview summary::before{
+  content:"+";display:grid;place-items:center;width:16px;height:16px;flex:0 0 auto;
+  border:1px solid var(--line);border-radius:2px;color:var(--accent);font-size:.75rem;line-height:1;
+}
+.pdfview[open] summary::before{content:"–";}
+.pdfview summary:hover{color:var(--fg);}
+.pdfview__stage{border-top:1px solid var(--line-soft);background:#FFFFFF;}
+.pdfview object{display:block;width:100%;height:min(78vh,720px);border:0;}
+.pdfview__fallback{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;
+  height:100%;padding:2rem 1rem;background:var(--bg);text-align:center;
+}
+.pdfview__fallback p{font-size:.875rem;color:var(--fg-3);max-width:34ch;}
+
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;}
+.kv{border:1px solid var(--line-soft);border-radius:3px;padding:.7rem .8rem;background:var(--bg);}
+.kv__n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:1.25rem;font-weight:500;letter-spacing:-.02em;}
+.kv__n.pos{color:var(--pos);}
+.kv__n.neg{color:var(--neg);}
+.kv__l{font-size:.75rem;color:var(--fg-3);margin-top:.3rem;line-height:1.35;}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line-soft);border-radius:3px;}
+table{border-collapse:collapse;width:100%;font-size:.84375rem;min-width:420px;}
+caption{
+  caption-side:top;text-align:left;padding:.6rem .8rem;font-family:var(--f-mono);
+  font-size:.6875rem;letter-spacing:.09em;text-transform:uppercase;color:var(--fg-3);
+  border-bottom:1px solid var(--line-soft);
+}
+th,td{padding:.5rem .8rem;text-align:left;border-top:1px solid var(--line-soft);}
+thead th{
+  font-family:var(--f-mono);font-weight:500;font-size:.6875rem;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--fg-3);border-top:0;
+}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;}
+tbody tr.hi td{background:var(--accent-quiet);}
+tbody tr.hi td:first-child{font-weight:500;}
+
+/* ─────────── CondVQA demo ─────────── */
+.demo{
+  background:var(--bg-raised);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.demo__body{padding:clamp(1rem,3vw,1.5rem);display:flex;flex-direction:column;gap:1.1rem;}
+.qrow{display:flex;flex-wrap:wrap;gap:.5rem;}
+.qbtn{
+  font-family:var(--f-body);font-size:.84375rem;text-align:left;cursor:pointer;
+  padding:.55rem .8rem;border-radius:3px;border:1px solid var(--line);
+  background:var(--bg);color:var(--fg-2);transition:border-color .18s ease,color .18s ease;
+}
+.qbtn:hover{border-color:var(--fg-3);color:var(--fg);}
+.qbtn[aria-pressed="true"]{border-color:var(--accent);color:var(--fg);background:var(--accent-quiet);}
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;}
+.slot{border:1px dashed var(--line);border-radius:3px;padding:.7rem .8rem;background:var(--bg);}
+.slot__k{font-family:var(--f-mono);font-size:.625rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3);}
+.slot__v{margin-top:.3rem;font-size:.90625rem;color:var(--fg);min-height:1.5em;}
+.slot--cond{border-style:solid;border-color:var(--pos);}
+.slot--q{border-style:solid;border-color:var(--line);}
+
+.strip{display:flex;gap:4px;overflow-x:auto;padding-bottom:.35rem;}
+.frm{
+  position:relative;flex:1 1 40px;height:62px;border-radius:2px;
+  border:1px solid var(--line-soft);overflow:hidden;
+  background:linear-gradient(160deg,var(--bg-sunk),var(--bg));
+  opacity:.42;transition:opacity .28s ease,border-color .28s ease,transform .28s ease;
+}
+.frm__obj{
+  position:absolute;left:50%;top:54%;width:42%;height:34%;transform:translate(-50%,-50%);
+  border-radius:2px;background:var(--fg-3);opacity:.5;transition:background .28s ease,opacity .28s ease;
+}
+.frm[data-has="false"] .frm__obj{border-radius:50%;width:22%;height:18%;opacity:.28;}
+.frm__i{
+  position:absolute;left:3px;top:2px;font-family:var(--f-mono);font-size:.5rem;
+  color:var(--fg-3);letter-spacing:.02em;
+}
+.frm.scan{opacity:.8;border-color:var(--pos);}
+.frm.pick{opacity:1;border-color:var(--accent);transform:translateY(-3px);}
+.frm.pick .frm__obj{background:var(--accent);opacity:1;}
+.frm.all{opacity:1;border-color:var(--pos);}
+
+.readout{display:flex;flex-wrap:wrap;align-items:baseline;gap:.6rem 1.25rem;font-family:var(--f-mono);font-size:.78125rem;color:var(--fg-3);}
+.readout b{color:var(--fg);font-weight:500;}
+.answer{
+  font-family:var(--f-display);font-size:var(--s-2);color:var(--accent);
+  min-height:1.2em;line-height:1.2;
+}
+.note{font-size:.75rem;color:var(--fg-3);line-height:1.5;}
+
+/* ─────────── Projects ─────────── */
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);border-radius:4px;overflow:hidden;}
+.card{background:var(--bg-raised);padding:1.35rem 1.25rem;display:flex;flex-direction:column;gap:.55rem;transition:background .2s ease;}
+.card:hover{background:var(--bg);}
+.card__y{font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.1em;color:var(--accent);}
+.card__t{font-family:var(--f-display);font-size:var(--s-1);line-height:1.2;}
+.card__d{font-size:.875rem;color:var(--fg-2);line-height:1.55;}
+.card__s{font-family:var(--f-mono);font-size:.6875rem;color:var(--fg-3);margin-top:auto;padding-top:.4rem;}
+
+/* ─────────── Timeline ─────────── */
+.tl{display:flex;flex-direction:column;}
+.tl__row{
+  display:grid;grid-template-columns:130px minmax(0,1fr);gap:1.5rem;
+  padding-block:1.35rem;border-top:1px solid var(--line-soft);
+}
+.tl__row:first-child{border-top:0;padding-top:0;}
+@media (max-width:640px){.tl__row{grid-template-columns:1fr;gap:.4rem;}}
+.tl__when{font-family:var(--f-mono);font-size:.78125rem;color:var(--fg-3);font-variant-numeric:tabular-nums;padding-top:.28rem;}
+.tl__what h3{font-size:var(--s-1);line-height:1.25;}
+.tl__where{font-size:.875rem;color:var(--fg-2);margin-top:.2rem;}
+.tl__pts{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem;}
+.chip{
+  font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.03em;
+  padding:.22rem .5rem;border:1px solid var(--line);border-radius:2px;color:var(--fg-3);
+}
+.chip--hi{border-color:var(--accent);color:var(--accent);}
+
+/* ─────────── Skills / recognition ─────────── */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:2rem;}
+.stack{display:flex;flex-direction:column;gap:.7rem;}
+.stack h3{font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);font-weight:500;}
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.list{display:flex;flex-direction:column;gap:.6rem;}
+.list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.7rem;align-items:start;font-size:.9375rem;color:var(--fg-2);}
+.snap{margin-top:1.6rem;max-width:330px;}
+.snap img{
+  width:100%;height:auto;border-radius:3px;border:1px solid var(--line);
+  box-shadow:var(--shadow);
+}
+.snap figcaption{
+  margin-top:.6rem;font-family:var(--f-mono);font-size:.6875rem;line-height:1.6;
+  letter-spacing:.04em;color:var(--fg-3);
+}
+.list li::before{
+  content:"";width:6px;height:6px;margin-top:.55rem;border-radius:1px;
+  background:var(--accent);transform:rotate(45deg);
+}
+
+/* ─────────── Footer ─────────── */
+.foot{border-top:1px solid var(--line);background:var(--bg-sunk);padding-block:clamp(3rem,7vw,4.5rem);}
+.foot__grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2rem;align-items:end;}
+@media (max-width:720px){.foot__grid{grid-template-columns:1fr;align-items:start;}}
+.foot__h{font-size:var(--s-4);line-height:1.05;}
+.foot__h em{font-style:italic;}
+.foot__sub{color:var(--fg-2);margin-top:.9rem;max-width:44ch;}
+.foot__meta{font-family:var(--f-mono);font-size:.6875rem;color:var(--fg-3);letter-spacing:.05em;line-height:1.7;text-align:right;}
+@media (max-width:720px){.foot__meta{text-align:left;}}
+.foot__side{display:flex;flex-direction:column;align-items:flex-end;gap:1.15rem;}
+@media (max-width:720px){.foot__side{align-items:flex-start;}}
+.foot__side .cover{max-width:132px;}
+
+/* ─────────── Reveal on scroll ─────────── */
+.rv{opacity:0;transform:translateY(14px);transition:opacity .7s cubic-bezier(.22,.7,.3,1),transform .7s cubic-bezier(.22,.7,.3,1);}
+.rv.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none;}}
+</style>
+</head>
+<body>
+
+<header class="topbar" id="topbar">
+  <div class="wrap topbar__in">
+    <a class="mark" href="#top"><span class="mark__dot" aria-hidden="true"></span>B. RODRIGUEZ</a>
+    <nav class="topnav" aria-label="Sections">
+      <a href="#research">Research</a>
+      <a href="#projects">Projects</a>
+      <a href="#path">Path</a>
+      <a href="#toolkit">Toolkit</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="themebtn" id="themebtn" type="button" aria-label="Switch color theme">
+      <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 0 0 10.5 10.5z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <div class="hero__id">
+        <picture class="avatar">
+          <source srcset="img/brandon.webp" type="image/webp" />
+          <img src="img/brandon.png" width="320" height="320"
+               alt="Portrait of Brandon Rodriguez." />
+        </picture>
+        <div class="hero__aff">
+          <p class="eyebrow">Ph.D. Student</p>
+          <p class="afflock">
+            <svg class="uflogo" viewBox="0 0 40 40" role="img" aria-label="University of Florida">
+              <rect width="40" height="40" rx="8" fill="var(--uf-blue)" />
+              <path d="M0 29H40v3a8 8 0 0 1-8 8H8a8 8 0 0 1-8-8z" fill="var(--uf-orange)" />
+              <text class="uflogo__t" x="20" y="22" text-anchor="middle" dominant-baseline="middle">UF</text>
+            </svg>
+            <span>University of Florida</span>
+          </p>
+        </div>
+      </div>
+      <h1 class="hero__name">Brandon<br /><em>Rodriguez</em></h1>
+      <p class="hero__role mono">
+        <span>Interpretable ML</span><span class="sep">/</span>
+        <span>Vision–Language</span><span class="sep">/</span>
+        <span>Neuro-symbolic Forecasting</span>
+      </p>
+      <p class="hero__lede">
+        I build machine learning systems that <b>show their work</b>. My research puts
+        explicit structure in front of the neural network, like a signed causal graph or a
+        semantic split of a question, so the answer comes with a reason attached.
+      </p>
+      <div class="links">
+        <a class="btn btn--key" href="papers/Brandon_Rodriguez_CV.pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg>
+          Curriculum Vitae
+        </a>
+        <a class="btn" href="https://www.linkedin.com/in/rdgbrandon" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21h-4z"/></svg>
+          LinkedIn
+        </a>
+        <a class="btn" href="https://github.com/rdgbrandon" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+          GitHub
+        </a>
+        <a class="btn" href="mailto:brandonrodriguez@ufl.edu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          Email
+        </a>
+      </div>
+    </div>
+
+    <figure class="panel" style="margin:0;">
+      <figcaption class="panel__head">
+        <span class="panel__t"><span class="pulse" aria-hidden="true"></span>Fig. 1 &nbsp;·&nbsp; Online-adaptive FCM</span>
+        <span class="mono" id="fcm-t">t = 0 d</span>
+      </figcaption>
+      <canvas id="fcm" role="img" aria-label="Animated fuzzy cognitive map: twelve economic, technical and sentiment concept nodes with signed causal edges adapting toward a central NASDAQ target node."></canvas>
+      <div class="panel__foot">
+        <div class="legend">
+          <span><i style="background:var(--pos)"></i>excitatory&nbsp;<span class="mono">w &gt; 0</span></span>
+          <span><i style="background:var(--neg)"></i>inhibitory&nbsp;<span class="mono">w &lt; 0</span></span>
+        </div>
+        Edge weights adapt every trading day from the one-step prediction error on the
+        NASDAQ target node. Converged values are taken from Fig. 5 of the ICMLA paper below.
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- ══════════ STAT BAND ══════════ -->
+<section class="band" aria-label="Academic record at a glance">
+  <div class="wrap">
+    <div class="band__grid">
+      <div class="stat"><div class="stat__n">3.99</div><div class="stat__l">GPA in the M.S. in Data Science &amp; AI</div></div>
+      <div class="stat"><div class="stat__n">2</div><div class="stat__l">Research papers, one accepted at IEEE ICMLA 2026</div></div>
+      <div class="stat"><div class="stat__n">21</div><div class="stat__l">Age at M.S. completion, via FIU's accelerated pathway</div></div>
+      <div class="stat"><div class="stat__n">1510</div><div class="stat__l">SAT, and 20+ hours tutoring it for other students</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ABOUT ══════════ -->
+<section class="section" id="about">
+  <div class="wrap section__grid">
+    <div class="rail">
+      <span class="rail__num">01</span>
+      <span class="rail__label">About</span>
+      <div class="rail__line"></div>
+    </div>
+    <div class="prose rv">
+      <p class="lede">
+        A question is not just a bag of tokens, and a market is not a flat vector. Both
+        have structure you can recover <em>before</em> the model starts predicting, and
+        recovering it is what makes the prediction explainable.
+      </p>
+      <p>
+        That idea runs through both of my papers. In <strong>CondVQA</strong>, an LLM splits a
+        conditional question into its condition and its actual question, so a vision model
+        only ever looks at the frames the condition selects, instead of averaging over the
+        whole video. In the <strong>fuzzy cognitive map</strong> work, a signed causal graph over
+        economic, technical and sentiment concepts adapts its edges online, so a forecast
+        can be traced back to the specific causal links that produced it.
+      </p>
+      <p>
+        I finished a B.S. in Computer Science and a Mathematics minor at Florida
+        International University in August 2025 as a Presidential Scholar and Honors
+        College student, then finished an M.S. in Data Science &amp; Artificial Intelligence
+        through FIU's accelerated pathway at 21, and I am now a Ph.D. student at the
+        <strong>University of Florida</strong>. Outside the lab I play chess, lift, run intramural
+        basketball and football, and keep a running supply of tricky math problems.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ RESEARCH ══════════ -->
+<section class="section" id="research">
+  <div class="wrap section__grid">
+    <div class="rail">
+      <span class="rail__num">02</span>
+      <span class="rail__label">Research</span>
+      <div class="rail__line"></div>
+    </div>
+
+    <div class="pubs">
+
+      <!-- ─── Paper 1: ICMLA ─── -->
+      <article class="pub rv">
+        <div class="pub__top">
+          <span class="tag tag--hit">Accepted · IEEE ICMLA 2026</span>
+          <span class="tag">Neuro-symbolic</span>
+          <span class="tag">Time series</span>
+        </div>
+        <div class="pub__lead">
+          <a class="cover" href="papers/Rodriguez_Online_Adaptive_FCM_ICMLA2026.pdf" target="_blank" rel="noopener">
+            <img src="thumbs/fcm-p1.jpg" width="697" height="902" loading="lazy" decoding="async"
+                 alt="First page of the paper Online-Adaptive Fuzzy Cognitive Maps for Neuro-symbolic Financial Forecasting." />
+            <span class="cover__cap">PDF · 10 pages</span>
+          </a>
+          <div class="pub__text">
+            <h2 class="pub__title">Online-Adaptive Fuzzy Cognitive Maps for Neuro-symbolic Financial Forecasting</h2>
+            <p class="pub__meta">
+              <b>IEEE International Conference on Machine Learning and Applications (ICMLA), 2026</b><br />
+              Dual FCM pipelines · LSTM ensemble · NASDAQ Composite, 2020–2025
+            </p>
+            <p class="pub__abs">
+              Financial markets shift regime faster than a fixed model can follow, and the models
+              that follow them best are the hardest to interrogate. This work pairs Fuzzy Cognitive
+              Maps, directed graphs whose signed edges <em>are</em> the explanation, with an LSTM
+              and live news sentiment. Two parallel FCM pipelines (Yahoo Finance and
+              Polygon/Google) adapt their causal edges online through an error-driven Hebbian rule,
+              with Loughran–McDonald lexicon sentiment injected as an exogenous bias. A second,
+              explanatory framework grows a map outward from a seed concept using peer-reviewed
+              literature and LLM-proposed links, every edge carrying a citation a human can check.
+            </p>
+          </div>
+        </div>
+
+        <div class="figures">
+          <div class="kv"><div class="kv__n">77.6%</div><div class="kv__l">State-directional accuracy, learned-weight ensemble</div></div>
+          <div class="kv"><div class="kv__n">0.035</div><div class="kv__l">Test MSE, 35% better than either FCM alone</div></div>
+          <div class="kv"><div class="kv__n neg">−0.053</div><div class="kv__l">Strongest inhibitory edge: energy price → NASDAQ</div></div>
+          <div class="kv"><div class="kv__n">20–30 d</div><div class="kv__l">Trading days to converge on a new market regime</div></div>
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <caption>Table II. NASDAQ Composite test set, 2025 (n = 250 trading days)</caption>
+            <thead><tr><th scope="col">Model</th><th scope="col" class="num">State-dir. acc.</th><th scope="col" class="num">Test MSE</th></tr></thead>
+            <tbody>
+              <tr><td>FCM (Yahoo Finance)</td><td class="num">66.0%</td><td class="num">0.054</td></tr>
+              <tr><td>FCM (Google Finance)</td><td class="num">65.6%</td><td class="num">0.054</td></tr>
+              <tr><td>LSTM (standalone baseline)</td><td class="num">77.7%</td><td class="num">0.035</td></tr>
+              <tr class="hi"><td>Ensemble (learned weights)</td><td class="num">77.6%</td><td class="num">0.035</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="links" style="margin-top:.25rem;">
+          <a class="btn" href="papers/Rodriguez_Online_Adaptive_FCM_ICMLA2026.pdf" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+            Read the paper (PDF)
+          </a>
+        </div>
+
+        <details class="pdfview">
+          <summary>Read it here, without leaving the page</summary>
+          <div class="pdfview__stage">
+            <object data="papers/Rodriguez_Online_Adaptive_FCM_ICMLA2026.pdf#view=FitH" type="application/pdf"
+                    title="Online-Adaptive Fuzzy Cognitive Maps for Neuro-symbolic Financial Forecasting, full paper">
+              <div class="pdfview__fallback">
+                <p>Your browser won't display PDFs inline. Open the paper in a new tab instead.</p>
+                <a class="btn btn--key" href="papers/Rodriguez_Online_Adaptive_FCM_ICMLA2026.pdf" target="_blank" rel="noopener">Open the paper</a>
+              </div>
+            </object>
+          </div>
+        </details>
+      </article>
+
+      <!-- ─── Paper 2: CondVQA ─── -->
+      <article class="pub rv">
+        <div class="pub__top">
+          <span class="tag tag--thesis">M.S. Thesis</span>
+          <span class="tag">Vision–language</span>
+          <span class="tag">Benchmark &amp; dataset</span>
+        </div>
+        <div class="pub__lead">
+          <a class="cover" href="papers/Rodriguez_CondVQA_MS_Thesis.pdf" target="_blank" rel="noopener">
+            <img src="thumbs/condvqa-p1.jpg" width="697" height="902" loading="lazy" decoding="async"
+                 alt="First page of the thesis CondVQA: A Benchmark for Conditional Visual Question Answering in Video Understanding." />
+            <span class="cover__cap">PDF · 9 pages</span>
+          </a>
+          <div class="pub__text">
+            <h2 class="pub__title">CondVQA: A Benchmark for Conditional Visual Question Answering in Video Understanding</h2>
+            <p class="pub__meta">
+              Brandon Rodriguez, <b>Yanzhao Wu</b> &nbsp;·&nbsp; Florida International University, 2026<br />
+              Master's thesis, advised by <b>Dr. Yanzhao Wu</b> · manuscript in NeurIPS Datasets &amp; Benchmarks format
+            </p>
+            <p class="pub__abs">
+              Most video QA models sample frames uniformly and hope the relevant ones are in
+              there. CondVQA asks a different question first: <em>what is this question actually
+              conditioned on?</em> An LLM backbone classifies each query as SIMPLE or CONDITIONAL
+              and, when conditional, splits it. "When you see a lawn mower, what color is it?"
+              becomes the condition <em>Is there a lawn mower?</em> and the question
+              <em>What color is it?</em> The condition is scored against every frame, a subset
+              K ⊆ N survives, and only that subset answers the question. It ships with a new
+              300-video annotated dataset built from the PE Video corpus, plus integrated-gradient
+              attributions for sanity-checking what the vision model actually looked at.
+            </p>
+          </div>
+        </div>
+
+        <div class="figures">
+          <div class="kv"><div class="kv__n">90.5%</div><div class="kv__l">Accuracy on the conditional-heavy split (tc1–tc200)</div></div>
+          <div class="kv"><div class="kv__n">99.0%</div><div class="kv__l">YouCook2 conditional benchmark</div></div>
+          <div class="kv"><div class="kv__n">744</div><div class="kv__l">Annotated video–question pairs across three splits</div></div>
+          <div class="kv"><div class="kv__n neg">−27 pts</div><div class="kv__l">Accuracy lost when condition extraction is ablated</div></div>
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <caption>Table 5. Ablation: does splitting the question actually matter?</caption>
+            <thead><tr><th scope="col">Configuration</th><th scope="col" class="num">Accuracy</th><th scope="col" class="num">Significance</th></tr></thead>
+            <tbody>
+              <tr class="hi"><td>Complete CondVQA</td><td class="num">90.5%</td><td class="num">n/a</td></tr>
+              <tr><td>Without condition extraction</td><td class="num">63.5%</td><td class="num">z = −6.42, p &lt; 0.0001</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="links" style="margin-top:.25rem;">
+          <a class="btn" href="papers/Rodriguez_CondVQA_MS_Thesis.pdf" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+            Read the thesis (PDF)
+          </a>
+          <a class="btn" href="https://github.com/rdgbrandon/CondVQA" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48l-.01-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85l-.01 2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+            Code
+          </a>
+        </div>
+
+        <details class="pdfview">
+          <summary>Read it here, without leaving the page</summary>
+          <div class="pdfview__stage">
+            <object data="papers/Rodriguez_CondVQA_MS_Thesis.pdf#view=FitH" type="application/pdf"
+                    title="CondVQA: A Benchmark for Conditional Visual Question Answering in Video Understanding, full thesis">
+              <div class="pdfview__fallback">
+                <p>Your browser won't display PDFs inline. Open the thesis in a new tab instead.</p>
+                <a class="btn btn--key" href="papers/Rodriguez_CondVQA_MS_Thesis.pdf" target="_blank" rel="noopener">Open the thesis</a>
+              </div>
+            </object>
+          </div>
+        </details>
+      </article>
+
+      <!-- ─── Interactive pipeline ─── -->
+      <div class="demo rv">
+        <div class="panel__head">
+          <span class="panel__t"><span class="pulse" aria-hidden="true"></span>Try it &nbsp;·&nbsp; the CondVQA frame-selection pipeline</span>
+          <span class="mono" id="demo-mode">idle</span>
+        </div>
+        <div class="demo__body">
+          <p class="note" style="color:var(--fg-2);font-size:.9375rem;">
+            Pick a question. Watch where the frames go.
+          </p>
+
+          <div class="qrow" id="qrow" role="group" aria-label="Choose a question"></div>
+
+          <div class="split">
+            <div class="slot slot--cond">
+              <div class="slot__k">Condition → frame subset K</div>
+              <div class="slot__v" id="slot-cond">·</div>
+            </div>
+            <div class="slot slot--q">
+              <div class="slot__k">Question → answered on K</div>
+              <div class="slot__v" id="slot-q">·</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="readout" style="margin-bottom:.5rem;">
+              <span>classification <b id="ro-class">·</b></span>
+              <span>frames <b id="ro-frames">·</b></span>
+              <span>selected <b id="ro-sel">·</b></span>
+            </div>
+            <div class="strip" id="strip" aria-hidden="true"></div>
+          </div>
+
+          <div>
+            <div class="slot__k">Answer</div>
+            <div class="answer" id="answer" aria-live="polite">·</div>
+          </div>
+
+          <p class="note">
+            Schematic reproduction of the pipeline in Figure 1 of the thesis. It shows how
+            the condition narrows N frames down to K, and is not live model output.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROJECTS ══════════ -->
+<section class="section" id="projects">
+  <div class="wrap section__grid">
+    <div class="rail">
+      <span class="rail__num">03</span>
+      <span class="rail__label">Built</span>
+      <div class="rail__line"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.5rem;">
+      <p class="lede rv">Things I made outside a paper deadline. Mostly hackathons, mostly markets, agents, and proofs.</p>
+      <div class="grid-cards rv">
+        <article class="card">
+          <div class="card__y">2025</div>
+          <h3 class="card__t">Data-Driven Financial FCM</h3>
+          <p class="card__d">Mapped the US stock market as a fuzzy cognitive map built from live data and ML-derived edges, then made it simulatable and viewable. The research thread that became the ICMLA paper.</p>
+          <div class="card__s">Python · live market data · graph simulation</div>
+        </article>
+        <article class="card">
+          <div class="card__y">2025</div>
+          <h3 class="card__t">Hybrid-ATP</h3>
+          <p class="card__d">An automated theorem-proving framework where LLM agents propose proofs and Lean verifies them, so a wrong step gets caught by a checker rather than by a reader.</p>
+          <div class="card__s">LLM agents · Lean · formal verification</div>
+        </article>
+        <article class="card">
+          <div class="card__y">2025</div>
+          <h3 class="card__t">Marketing Agents</h3>
+          <p class="card__d">A ShellHacks build: an LLM agent framework that turns a business idea into a revenue plan, with a separate specialist agent per social platform.</p>
+          <div class="card__s">Multi-agent LLM · ShellHacks</div>
+        </article>
+        <article class="card">
+          <div class="card__y">2025</div>
+          <h3 class="card__t">Stock Overflow</h3>
+          <p class="card__d">A market simulator seeded with real-world metadata that evolves prices through geometric Brownian motion, a sandbox for seeing how much of a chart is just noise.</p>
+          <div class="card__s">Python · Brownian motion · HTML</div>
+        </article>
+        <article class="card">
+          <div class="card__y">2024</div>
+          <h3 class="card__t">NBA Predictor</h3>
+          <p class="card__d">A Streamlit app forecasting player and team performance with random forests and regression models over historical box-score data.</p>
+          <div class="card__s">Streamlit · scikit-learn</div>
+        </article>
+        <article class="card">
+          <div class="card__y">2024</div>
+          <h3 class="card__t">Financial Dashboard</h3>
+          <p class="card__d">A full-stack personal finance board with authentication, built at ShellHacks on Node.js over a MySQL backend.</p>
+          <div class="card__s">Node.js · MySQL · ShellHacks</div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PATH ══════════ -->
+<section class="section" id="path">
+  <div class="wrap section__grid">
+    <div class="rail">
+      <span class="rail__num">04</span>
+      <span class="rail__label">Path</span>
+      <div class="rail__line"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2.75rem;">
+
+      <div class="rv">
+        <h2 style="font-size:var(--s-2);margin-bottom:1.25rem;">Education</h2>
+        <div class="tl">
+          <div class="tl__row">
+            <div class="tl__when">2026 –</div>
+            <div class="tl__what">
+              <h3>Ph.D., Computer Science</h3>
+              <p class="tl__where">University of Florida</p>
+              <div class="tl__pts"><span class="chip chip--hi">In progress</span><span class="chip">AI / ML research</span></div>
+            </div>
+          </div>
+          <div class="tl__row">
+            <div class="tl__when">2024 – 2026</div>
+            <div class="tl__what">
+              <h3>M.S., Data Science &amp; Artificial Intelligence</h3>
+              <p class="tl__where">Florida International University</p>
+              <div class="tl__pts"><span class="chip chip--hi">4.0 GPA</span><span class="chip">Accelerated pathway</span><span class="chip">Thesis: CondVQA</span></div>
+            </div>
+          </div>
+          <div class="tl__row">
+            <div class="tl__when">2021 – 2025</div>
+            <div class="tl__what">
+              <h3>B.S., Computer Science</h3>
+              <p class="tl__where">Florida International University · graduated August 2025</p>
+              <div class="tl__pts"><span class="chip chip--hi">Presidential Scholar</span><span class="chip">Honors College</span><span class="chip">3.9 major GPA</span><span class="chip">Dean's List</span></div>
+            </div>
+          </div>
+          <div class="tl__row">
+            <div class="tl__when">2021 – 2025</div>
+            <div class="tl__what">
+              <h3>Minor, Mathematics</h3>
+              <p class="tl__where">Florida International University</p>
+              <div class="tl__pts"><span class="chip chip--hi">4.0 GPA</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rv">
+        <h2 style="font-size:var(--s-2);margin-bottom:1.25rem;">Experience</h2>
+        <div class="tl">
+          <div class="tl__row">
+            <div class="tl__when">2024 – 2025</div>
+            <div class="tl__what">
+              <h3>SAT Tutor</h3>
+              <p class="tl__where">Cram Coach Tutoring. On-site and online instruction, specializing in mathematics.</p>
+            </div>
+          </div>
+          <div class="tl__row">
+            <div class="tl__when">2022 – 2023</div>
+            <div class="tl__what">
+              <h3>SAT Tutor</h3>
+              <p class="tl__where">FIU Dual Enrollment. Coordinated study sessions and 20+ hours of community service.</p>
+            </div>
+          </div>
+          <div class="tl__row">
+            <div class="tl__when">2021</div>
+            <div class="tl__what">
+              <h3>Research Intern</h3>
+              <p class="tl__where">CIARA Network, FIU. Six-week on-site internship supporting networking research projects.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TOOLKIT ══════════ -->
+<section class="section" id="toolkit">
+  <div class="wrap section__grid">
+    <div class="rail">
+      <span class="rail__num">05</span>
+      <span class="rail__label">Toolkit</span>
+      <div class="rail__line"></div>
+    </div>
+    <div class="cols rv">
+      <div class="stack">
+        <h3>Languages</h3>
+        <div class="tags">
+          <span class="chip">Python</span><span class="chip">Java</span><span class="chip">JavaScript</span>
+          <span class="chip">C</span><span class="chip">SQL</span><span class="chip">R</span>
+          <span class="chip">HTML</span><span class="chip">CSS</span>
+        </div>
+      </div>
+      <div class="stack">
+        <h3>ML &amp; Data</h3>
+        <div class="tags">
+          <span class="chip">PyTorch</span><span class="chip">TensorFlow</span><span class="chip">scikit-learn</span>
+          <span class="chip">Neural networks</span><span class="chip">LLM / VLM pipelines</span>
+          <span class="chip">Integrated gradients</span><span class="chip">Fuzzy cognitive maps</span>
+        </div>
+      </div>
+      <div class="stack">
+        <h3>Environment</h3>
+        <div class="tags">
+          <span class="chip">Google Colab</span><span class="chip">Jupyter</span><span class="chip">Anaconda</span>
+          <span class="chip">Streamlit</span><span class="chip">Node.js</span><span class="chip">MySQL</span>
+          <span class="chip">Power BI</span><span class="chip">Lean</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ RECOGNITION ══════════ -->
+<section class="section" id="recognition">
+  <div class="wrap section__grid">
+    <div class="rail">
+      <span class="rail__num">06</span>
+      <span class="rail__label">Record</span>
+      <div class="rail__line"></div>
+    </div>
+    <div class="cols rv">
+      <div class="stack">
+        <h3>Recognition</h3>
+        <ul class="list">
+          <li>Presidential Scholar, Florida International University</li>
+          <li>Honors College student; Dean's List, multiple semesters</li>
+          <li>Paper accepted at IEEE ICMLA 2026</li>
+          <li>Completed a B.S. during what would have been sophomore year</li>
+          <li>Member, FIU INIT Club</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <h3>Off-hours</h3>
+        <ul class="list">
+          <li>Chess</li>
+          <li>Tricky math problems, for fun</li>
+          <li>Weightlifting</li>
+          <li>Intramural basketball and football</li>
+        </ul>
+        <figure class="snap">
+          <picture>
+            <source srcset="img/chess-2016.webp" type="image/webp" />
+            <img src="img/chess-2016.jpg" width="720" height="960" loading="lazy" decoding="async"
+                 alt="Brandon Rodriguez at a scholastic chess tournament in 2016, resting his arms
+                      around two trophies taller than he is." />
+          </picture>
+          <figcaption>Scholastic chess, 2016. Two trophies, one weekend.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════ CONTACT ══════════ -->
+<footer class="foot" id="contact">
+  <div class="wrap foot__grid">
+    <div>
+      <p class="eyebrow">Open to collaboration</p>
+      <h2 class="foot__h" style="margin-top:.7rem;">Working on something<br /><em>interpretable?</em></h2>
+      <p class="foot__sub">
+        I'm always interested in AI/ML research collaborations, especially anything where the
+        model has to justify itself. Email or LinkedIn is the fastest way to reach me.
+      </p>
+      <div class="links">
+        <a class="btn btn--key" href="mailto:brandonrodriguez@ufl.edu">brandonrodriguez@ufl.edu</a>
+        <a class="btn" href="mailto:brandonrodguez@gmail.com">brandonrodguez@gmail.com</a>
+        <a class="btn" href="https://www.linkedin.com/in/rdgbrandon" target="_blank" rel="noopener">in/rdgbrandon</a>
+        <a class="btn" href="https://github.com/rdgbrandon" target="_blank" rel="noopener">github.com/rdgbrandon</a>
+      </div>
+    </div>
+    <div class="foot__side">
+      <a class="cover" href="papers/Brandon_Rodriguez_CV.pdf" target="_blank" rel="noopener">
+        <img src="thumbs/cv-p1.jpg" width="678" height="959" loading="lazy" decoding="async"
+             alt="First page of Brandon Rodriguez's curriculum vitae." />
+        <span class="cover__cap">CV · 2 pages</span>
+      </a>
+      <div class="foot__meta">
+      Brandon Rodriguez<br />
+      Ph.D. Student · University of Florida<br />
+      Gainesville, Florida<br />
+      <span id="year">2026</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var root = document.documentElement;
+
+  /* ── Theme toggle ───────────────────────────────────────── */
+  var saved = null;
+  try { saved = localStorage.getItem("br-theme"); } catch (e) {}
+  if (saved === "dark" || saved === "light") root.setAttribute("data-theme", saved);
+
+  function currentTheme() {
+    var stamped = root.getAttribute("data-theme");
+    if (stamped) return stamped;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  document.getElementById("themebtn").addEventListener("click", function () {
+    var next = currentTheme() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("br-theme", next); } catch (e) {}
+    readColors();
+  });
+
+  /* ── Sticky header hairline ─────────────────────────────── */
+  var topbar = document.getElementById("topbar");
+  var onScroll = function () {
+    topbar.setAttribute("data-stuck", window.scrollY > 8 ? "true" : "false");
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* ── Reveal on scroll ───────────────────────────────────── */
+  var revealables = document.querySelectorAll(".rv");
+  if (reduce || !("IntersectionObserver" in window)) {
+    revealables.forEach(function (el) { el.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    revealables.forEach(function (el) { io.observe(el); });
+  }
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  /* ═════════════════════════════════════════════════════════
+     Live fuzzy cognitive map, Fig. 5 of the ICMLA paper.
+     Twelve concept nodes, signed edges into the NASDAQ target,
+     weights relaxing toward their converged values.
+     ═════════════════════════════════════════════════════════ */
+  var NODES = [
+    { label: "Equity Inflows",  w:  0.038 },
+    { label: "Corp. Earn.",     w:  0.037 },
+    { label: "Mom. 5-day",      w:  0.033 },
+    { label: "Market Volat.",   w:  0.030 },
+    { label: "Investor Sent.",  w:  0.028 },
+    { label: "Low Unempl.",     w:  0.026 },
+    { label: "Sent. Diverg.",   w: -0.016 },
+    { label: "Large Deficits",  w: -0.021 },
+    { label: "RSI-14",          w: -0.035 },
+    { label: "Monetary Policy", w: -0.040 },
+    { label: "Inflation",       w: -0.047 },
+    { label: "Energy Price",    w: -0.053 }
+  ];
+
+  var canvas = document.getElementById("fcm");
+  var ctx = canvas.getContext("2d");
+  var C = {};
+
+  function readColors() {
+    var cs = getComputedStyle(root);
+    C.pos = cs.getPropertyValue("--pos").trim();
+    C.neg = cs.getPropertyValue("--neg").trim();
+    C.fg = cs.getPropertyValue("--fg").trim();
+    C.fg3 = cs.getPropertyValue("--fg-3").trim();
+    C.line = cs.getPropertyValue("--line").trim();
+    C.raised = cs.getPropertyValue("--bg-raised").trim();
+    C.accent = cs.getPropertyValue("--accent").trim();
+    if (reduce) draw(1);
+  }
+
+  var W = 0, H = 0, dpr = 1;
+  function resize() {
+    var r = canvas.getBoundingClientRect();
+    if (!r.width) return;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (reduce) draw(1);
+  }
+
+  /* progress p ∈ [0,1] scales every edge from its initial prior to its converged value */
+  function draw(p, phase) {
+    if (!W) return;
+    phase = phase || 0;
+    ctx.clearRect(0, 0, W, H);
+
+    var cx = W / 2, cy = H / 2;
+    var maxW = 0.053;
+    var n = NODES.length;
+
+    /* size the ring so the widest label still clears the panel edge */
+    var fs = Math.max(7.5, Math.min(9.5, W / 50));
+    var labelFont = "500 " + fs.toFixed(1) + "px 'Plex Mono', ui-monospace, monospace";
+    ctx.font = labelFont;
+    var widest = 0;
+    for (var m = 0; m < n; m++) {
+      widest = Math.max(widest, ctx.measureText(NODES[m].label).width);
+    }
+    var Rx = Math.max(46, W / 2 - widest - 18);
+    var Ry = Math.max(46, H / 2 - fs * 2 - 14);
+
+    for (var i = 0; i < n; i++) {
+      var a = (i / n) * Math.PI * 2 - Math.PI / 2;
+      var x = cx + Math.cos(a) * Rx;
+      var y = cy + Math.sin(a) * Ry;
+
+      /* individual nodes settle at slightly different rates, as they do in Fig. 7 */
+      var rate = 0.55 + 0.45 * ((i * 7) % n) / n;
+      var pi = Math.min(1, p / rate);
+      var jitter = reduce ? 0 : Math.sin(phase * 0.9 + i * 1.7) * 0.06 * pi;
+      var w = NODES[i].w * (0.18 + 0.82 * pi) * (1 + jitter);
+
+      var mag = Math.abs(w) / maxW;
+      var col = w >= 0 ? C.pos : C.neg;
+
+      /* edge */
+      ctx.save();
+      ctx.globalAlpha = 0.28 + 0.62 * mag;
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 0.7 + 2.6 * mag;
+      ctx.lineCap = "round";
+      var gap = 26, hub = 30;
+      var dx = cx - x, dy = cy - y, d = Math.hypot(dx, dy);
+      var ux = dx / d, uy = dy / d;
+      ctx.beginPath();
+      ctx.moveTo(x + ux * gap, y + uy * gap);
+      ctx.lineTo(cx - ux * hub, cy - uy * hub);
+      ctx.stroke();
+
+      /* arrowhead into the target */
+      var ax = cx - ux * hub, ay = cy - uy * hub;
+      var head = 4 + 3 * mag;
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax - ux * head * 2 - uy * head, ay - uy * head * 2 + ux * head);
+      ctx.lineTo(ax - ux * head * 2 + uy * head, ay - uy * head * 2 - ux * head);
+      ctx.closePath();
+      ctx.fillStyle = col;
+      ctx.fill();
+      ctx.restore();
+
+      /* travelling pulse along the strongest edges */
+      if (!reduce && mag > 0.5) {
+        var t = ((phase * 0.16) + i * 0.37) % 1;
+        var px = x + ux * (gap + (d - gap - hub) * t);
+        var py = y + uy * (gap + (d - gap - hub) * t);
+        ctx.save();
+        ctx.globalAlpha = 0.75 * Math.sin(Math.PI * t);
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.arc(px, py, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      /* node dot */
+      ctx.beginPath();
+      ctx.arc(x, y, 4.5 + 2.5 * mag, 0, Math.PI * 2);
+      ctx.fillStyle = C.raised;
+      ctx.fill();
+      ctx.lineWidth = 1.4;
+      ctx.strokeStyle = col;
+      ctx.stroke();
+
+      /* label + signed weight, flipped to stay inside the panel */
+      var right = Math.cos(a) > -0.05;
+      var lx = x + Math.cos(a) * 11;
+      var ly = y + Math.sin(a) * 11;
+      ctx.textAlign = right ? "left" : "right";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = C.fg3;
+      ctx.font = labelFont;
+      ctx.fillText(NODES[i].label, lx, ly - fs * 0.6);
+      ctx.fillStyle = col;
+      ctx.fillText((w >= 0 ? "+" : "−") + Math.abs(w).toFixed(3), lx, ly + fs * 0.7);
+    }
+
+    /* target node */
+    ctx.beginPath();
+    ctx.arc(cx, cy, 25, 0, Math.PI * 2);
+    ctx.fillStyle = C.raised;
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = C.accent;
+    ctx.stroke();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = C.fg;
+    ctx.font = labelFont;
+    ctx.fillText("NASDAQ", cx, cy);
+  }
+
+  var tEl = document.getElementById("fcm-t");
+  var start = null, RUN = 14000, HOLD = 2600;
+
+  function frame(ts) {
+    if (start === null) start = ts;
+    var cycle = RUN + HOLD;
+    var e = (ts - start) % cycle;
+    var p = Math.min(1, e / RUN);
+    var eased = 1 - Math.pow(1 - p, 2.2);
+    draw(eased, ts / 1000);
+    tEl.textContent = "t = " + Math.round(eased * 1250) + " d";
+    requestAnimationFrame(frame);
+  }
+
+  readColors();
+  resize();
+  window.addEventListener("resize", resize, { passive: true });
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", readColors);
+  }
+  if (reduce) {
+    tEl.textContent = "t = 1250 d (converged)";
+    draw(1);
+  } else {
+    requestAnimationFrame(frame);
+  }
+
+  /* ═════════════════════════════════════════════════════════
+     CondVQA frame-selection demo
+     ═════════════════════════════════════════════════════════ */
+  var N_FRAMES = 16;
+  var QUESTIONS = [
+    {
+      text: "When you see a lawn mower, what color is it?",
+      type: "CONDITIONAL",
+      cond: "Is there a lawn mower?",
+      q: "What color is it?",
+      k: [5, 6, 7, 8, 9],
+      answer: "Red"
+    },
+    {
+      text: "When you see a basket, how many apples are inside?",
+      type: "CONDITIONAL",
+      cond: "Is there a basket?",
+      q: "How many apples are inside?",
+      k: [9, 10, 11, 12],
+      answer: "4+"
+    },
+    {
+      text: "What animal can be seen?",
+      type: "SIMPLE",
+      cond: null,
+      q: "What animal can be seen?",
+      k: null,
+      answer: "Tiger"
+    }
+  ];
+
+  var strip = document.getElementById("strip");
+  var frames = [];
+  for (var f = 0; f < N_FRAMES; f++) {
+    var el = document.createElement("div");
+    el.className = "frm";
+    el.setAttribute("data-has", "false");
+    el.innerHTML = '<span class="frm__i">' + (f + 1) + '</span><span class="frm__obj"></span>';
+    strip.appendChild(el);
+    frames.push(el);
+  }
+
+  var qrow = document.getElementById("qrow");
+  var slotCond = document.getElementById("slot-cond");
+  var slotQ = document.getElementById("slot-q");
+  var roClass = document.getElementById("ro-class");
+  var roFrames = document.getElementById("ro-frames");
+  var roSel = document.getElementById("ro-sel");
+  var answerEl = document.getElementById("answer");
+  var modeEl = document.getElementById("demo-mode");
+  var timers = [];
+  var activeBtn = null;
+
+  function clearTimers() {
+    timers.forEach(clearTimeout);
+    timers = [];
+  }
+  function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+
+  function resetStrip() {
+    frames.forEach(function (el) {
+      el.className = "frm";
+      el.setAttribute("data-has", "false");
+    });
+  }
+
+  function run(q, btn) {
+    clearTimers();
+    resetStrip();
+    if (activeBtn) activeBtn.setAttribute("aria-pressed", "false");
+    activeBtn = btn;
+    btn.setAttribute("aria-pressed", "true");
+
+    answerEl.textContent = "·";
+    roClass.textContent = q.type;
+    roFrames.textContent = "N = " + N_FRAMES;
+    roSel.textContent = "·";
+    slotCond.textContent = q.cond || "none, SIMPLE question";
+    slotQ.textContent = q.q;
+    modeEl.textContent = "running";
+
+    var step = reduce ? 0 : 70;
+
+    if (q.type === "SIMPLE") {
+      frames.forEach(function (el, i) {
+        later(function () { el.classList.add("all"); el.setAttribute("data-has", "true"); }, i * step);
+      });
+      later(function () {
+        roSel.textContent = "K = N (all " + N_FRAMES + ")";
+        answerEl.textContent = q.answer;
+        modeEl.textContent = "done";
+      }, N_FRAMES * step + 220);
+      return;
+    }
+
+    /* scan every frame with the condition, then keep the subset that answers yes */
+    frames.forEach(function (el, i) {
+      later(function () { el.classList.add("scan"); }, i * step);
+    });
+    later(function () {
+      frames.forEach(function (el, i) {
+        el.classList.remove("scan");
+        if (q.k.indexOf(i) !== -1) {
+          el.classList.add("pick");
+          el.setAttribute("data-has", "true");
+        }
+      });
+      roSel.textContent = "K = " + q.k.length + " frames (" + (q.k[0] + 1) + "–" + (q.k[q.k.length - 1] + 1) + ")";
+    }, N_FRAMES * step + 260);
+    later(function () {
+      answerEl.textContent = q.answer;
+      modeEl.textContent = "done";
+    }, N_FRAMES * step + 900);
+  }
+
+  QUESTIONS.forEach(function (q, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "qbtn";
+    b.setAttribute("aria-pressed", "false");
+    b.textContent = q.text;
+    b.addEventListener("click", function () { run(q, b); });
+    qrow.appendChild(b);
+    if (i === 0) {
+      /* prime the first example once the demo scrolls into view */
+      var demoIO = "IntersectionObserver" in window ? new IntersectionObserver(function (en) {
+        if (en[0].isIntersecting) { run(q, b); demoIO.disconnect(); }
+      }, { threshold: 0.35 }) : null;
+      if (demoIO) demoIO.observe(strip); else run(q, b);
+    }
+  });
+})();
+</script>
+</body>
+</html>
