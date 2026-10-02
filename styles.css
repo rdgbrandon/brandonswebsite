@@ -37,7 +37,7 @@
   font-display: swap;
 }
 :root {
-  --paper: #f1f8ff;
+  --paper: #e5f2ff;
   --ink: #203f5b;
   --brand: #24577e;
   --muted: #526a80;
@@ -149,7 +149,7 @@ strong {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(241, 248, 255, 0.95);
+  background: rgba(229, 242, 255, 0.95);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--line);
 }
@@ -620,7 +620,7 @@ h1 em {
   text-anchor: middle;
 }
 .graph-text .center-text {
-  fill: #f1f8ff;
+  fill: #e5f2ff;
   font-size: 19px;
 }
 .figure-caption {
@@ -1845,25 +1845,29 @@ h1 em {
   }
 }
 
-/* Lead with the PhD role and university, followed by the name. */
+/* Name first, with the PhD role and university immediately below. */
 .hero #hero-title {
-  font-size: clamp(46px, 4.7vw, 66px);
-  line-height: 1.04;
-  letter-spacing: -2px;
-  margin: 0 0 26px;
+  font-size: clamp(76px, 8.1vw, 112px);
+  line-height: 0.9;
+  letter-spacing: -3px;
+  margin: 0 0 28px;
 }
-.hero-name {
-  font: italic 38px/1.15 var(--serif);
-  color: var(--brand);
+.hero-role {
+  font: 24px/1.45 var(--sans);
+  color: var(--ink);
   margin-bottom: 22px;
 }
+.hero-role span {
+  font-weight: 500;
+  color: #a84a15;
+}
 .primary {
-  background: #ad4e17;
-  border-color: #ad4e17;
-  color: #fff;
+  background: #f78c35;
+  border-color: #f78c35;
+  color: #102e47;
 }
 .primary:hover {
-  background: #913d0d;
+  background: #ffa158;
 }
 .contact {
   background: #d5e9fa;
@@ -1890,11 +1894,11 @@ h1 em {
 }
 @media (max-width: 760px) {
   .hero #hero-title {
-    font-size: clamp(42px, 8.5vw, 58px);
-    letter-spacing: -1.4px;
+    font-size: clamp(69px, 14vw, 100px);
+    letter-spacing: -2.5px;
   }
-  .hero-name {
-    font-size: 33px;
+  .hero-role {
+    font-size: 22px;
   }
 }
 @media print {
